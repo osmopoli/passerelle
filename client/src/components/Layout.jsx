@@ -19,6 +19,9 @@ export default function Layout({ user, children }) {
             <Link to="/" className="text-sm font-medium text-slate-700 hover:text-emerald-700">
               Découvrir
             </Link>
+            <Link to="/publier" className="text-sm font-medium text-slate-700 hover:text-emerald-700">
+              Publier
+            </Link>
             <Link
               to={user ? '/profil' : '/connexion'}
               className="rounded-lg bg-emerald-700 px-3 py-1.5 text-sm font-semibold text-white hover:bg-emerald-800"

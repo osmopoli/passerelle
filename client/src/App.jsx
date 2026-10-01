@@ -4,6 +4,7 @@ import AuthScreen from './components/AuthScreen.jsx';
 import ProfileScreen from './components/ProfileScreen.jsx';
 import DiscoverPage from './pages/DiscoverPage.jsx';
 import ListingDetailPage from './pages/ListingDetailPage.jsx';
+import NewListingPage from './pages/NewListingPage.jsx';
 import NotFoundPage from './pages/NotFoundPage.jsx';
 import { api, getToken, setToken } from './api/client.js';
 import { navigate, useLocation } from './lib/router.jsx';
@@ -13,6 +14,7 @@ function Route({ session }) {
   const { user, zones, setUser, logout } = session;
 
   if (pathname === '/') return <DiscoverPage />;
+  if (pathname === '/publier') return <NewListingPage user={user} />;
   const detail = pathname.match(/^\/annonces\/([^/]+)\/?$/);
   if (detail) {
     const id = decodeURIComponent(detail[1]);
