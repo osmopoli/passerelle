@@ -1,0 +1,123 @@
+// Données FICTIVES, utilisées tant que l'API annonces (PAND-7) n'est pas
+// livrée. Elles ne remplacent pas le seed serveur (PAND-6).
+
+const alice = { id: 'u1', name: 'Alice Martin', zone: 'mamoudzou' };
+const karim = { id: 'u2', name: 'Karim Benali', zone: 'dembeni' };
+const lea = { id: 'u3', name: 'Léa Payet', zone: 'koungou' };
+
+export const MOCK_LISTINGS = [
+  {
+    id: 'l1',
+    type: 'offre',
+    category: 'bricolage',
+    title: 'Prêt de perceuse-visseuse',
+    description:
+      'Perceuse-visseuse sans fil avec deux batteries et un coffret de mèches. Idéale pour monter un meuble ou fixer une étagère.',
+    availability: 'Le week-end, à récupérer chez moi',
+    status: 'disponible',
+    createdAt: '2026-09-28T09:15:00Z',
+    author: alice,
+  },
+  {
+    id: 'l2',
+    type: 'demande',
+    category: 'jardinage',
+    title: "Besoin d'aide pour tailler une haie",
+    description:
+      "Haie d'une quinzaine de mètres à tailler avant les pluies. J'ai le taille-haie, il me manque une deuxième paire de bras.",
+    availability: 'Samedi matin',
+    status: 'disponible',
+    createdAt: '2026-09-29T07:40:00Z',
+    author: karim,
+  },
+  {
+    id: 'l3',
+    type: 'offre',
+    category: 'cours',
+    title: 'Soutien en maths niveau collège',
+    description:
+      "Enseignante retraitée, je propose une heure de soutien en mathématiques par semaine pour un élève de la 6e à la 3e.",
+    availability: 'Mercredi après-midi',
+    status: 'demandee',
+    createdAt: '2026-09-25T14:00:00Z',
+    author: lea,
+  },
+  {
+    id: 'l4',
+    type: 'offre',
+    category: 'objets',
+    title: 'Lit bébé à donner',
+    description: 'Lit à barreaux en bois avec matelas, très bon état. À venir chercher sur place.',
+    availability: 'En semaine après 18 h',
+    status: 'acceptee',
+    createdAt: '2026-09-20T18:30:00Z',
+    author: alice,
+  },
+  {
+    id: 'l5',
+    type: 'demande',
+    category: 'coup_de_main',
+    title: 'Installer une imprimante sur mon ordinateur',
+    description:
+      "Je n'arrive pas à faire fonctionner ma nouvelle imprimante en Wi-Fi. Une demi-heure de votre temps me rendrait bien service.",
+    availability: 'Du lundi au vendredi, en journée',
+    status: 'disponible',
+    createdAt: '2026-09-30T10:05:00Z',
+    author: lea,
+  },
+  {
+    id: 'l6',
+    type: 'offre',
+    category: 'transport',
+    title: 'Covoiturage vers le marché du samedi',
+    description: 'Je descends au marché tous les samedis, trois places libres dans la voiture.',
+    availability: 'Samedi, départ 7 h 30',
+    status: 'disponible',
+    createdAt: '2026-09-27T16:20:00Z',
+    author: karim,
+  },
+  {
+    id: 'l7',
+    type: 'demande',
+    category: 'garde',
+    title: 'Garde ponctuelle après l’école',
+    description: "Recherche quelqu'un de confiance pour récupérer mon fils à l'école deux soirs ce mois-ci.",
+    availability: 'Mardi et jeudi, 16 h 30',
+    status: 'demandee',
+    createdAt: '2026-09-26T12:00:00Z',
+    author: alice,
+  },
+  {
+    id: 'l8',
+    type: 'offre',
+    category: 'jardinage',
+    title: 'Boutures et plants de tomates',
+    description: 'Une vingtaine de plants de tomates cerises et des boutures de basilic, gratuits.',
+    availability: 'Tous les jours, devant le portail',
+    status: 'disponible',
+    createdAt: '2026-09-30T08:00:00Z',
+    author: lea,
+  },
+  {
+    id: 'l9',
+    type: 'demande',
+    category: 'outils',
+    title: 'Emprunter un diable pour un déménagement',
+    description: 'Petit déménagement dans le quartier, il me faudrait un diable pour une journée.',
+    availability: 'Dimanche 12 octobre',
+    status: 'disponible',
+    createdAt: '2026-09-29T19:45:00Z',
+    author: karim,
+  },
+  {
+    id: 'l10',
+    type: 'offre',
+    category: 'coup_de_main',
+    title: 'Coup de main pour remplir des papiers',
+    description: 'Aide pour les démarches administratives en ligne (CAF, impôts, Ameli).',
+    availability: 'Le vendredi',
+    status: 'terminee',
+    createdAt: '2026-09-15T09:00:00Z',
+    author: alice,
+  },
+];
