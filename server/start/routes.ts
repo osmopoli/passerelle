@@ -11,6 +11,11 @@ import { existsSync } from 'node:fs'
 import app from '@adonisjs/core/services/app'
 import router from '@adonisjs/core/services/router'
 import db from '@adonisjs/lucid/services/db'
+import { middleware } from '#start/kernel'
+import { ZONES } from '#constants/domain'
+
+const AuthController = () => import('#controllers/auth_controller')
+const ProfileController = () => import('#controllers/profile_controller')
 
 router
   .group(() => {
@@ -29,6 +34,22 @@ router
         time: new Date().toISOString(),
       }
     })
+
+    /** Listes fermées pour les formulaires du front. */
+    router.get('/meta', async () => ({
+      zones: Object.entries(ZONES).map(([value, label]) => ({ value, label })),
+    }))
+
+    router.post('/auth/register', [AuthController, 'register'])
+    router.post('/auth/login', [AuthController, 'login'])
+
+    router
+      .group(() => {
+        router.post('/auth/logout', [AuthController, 'logout'])
+        router.get('/me', [ProfileController, 'show'])
+        router.patch('/me', [ProfileController, 'update'])
+      })
+      .use(middleware.auth())
 
     router.any('/*', async ({ response }) => {
       return response.notFound({ error: 'Route introuvable' })
