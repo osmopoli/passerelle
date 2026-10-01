@@ -1,0 +1,18 @@
+{
+  "name": "passerelle",
+  "private": true,
+  "version": "0.1.0",
+  "description": "PASSERELLE — offres, demandes et échanges entre habitants",
+  "workspaces": ["client", "server"],
+  "scripts": {
+    "dev": "concurrently -n server,client -c blue,green \"npm run dev -w server\" \"npm run dev -w client\"",
+    "build": "npm run build -w client",
+    "start": "npm run start -w server"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
