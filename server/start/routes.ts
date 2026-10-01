@@ -16,6 +16,7 @@ import { ZONES } from '#constants/domain'
 
 const AuthController = () => import('#controllers/auth_controller')
 const ProfileController = () => import('#controllers/profile_controller')
+const ListingsController = () => import('#controllers/listings_controller')
 
 router
   .group(() => {
@@ -50,6 +51,10 @@ router
         router.patch('/me', [ProfileController, 'update'])
       })
       .use(middleware.auth())
+
+    router.get('/listings', [ListingsController, 'index'])
+    router.get('/listings/:id', [ListingsController, 'show']).where('id', router.matchers.number())
+    router.post('/listings', [ListingsController, 'store']).use(middleware.auth())
 
     router.any('/*', async ({ response }) => {
       return response.notFound({ error: 'Route introuvable' })

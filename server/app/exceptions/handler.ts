@@ -1,5 +1,6 @@
 import app from '@adonisjs/core/services/app'
 import { HttpContext, ExceptionHandler } from '@adonisjs/core/http'
+import { errors as vineErrors } from '@vinejs/vine'
 
 export default class HttpExceptionHandler extends ExceptionHandler {
   /**
@@ -13,6 +14,10 @@ export default class HttpExceptionHandler extends ExceptionHandler {
    * response to the client
    */
   async handle(error: unknown, ctx: HttpContext) {
+    // Contrat API : une saisie invalide (champ manquant, valeur hors liste) renvoie 400, pas 422.
+    if (error instanceof vineErrors.E_VALIDATION_ERROR) {
+      return ctx.response.badRequest({ errors: error.messages })
+    }
     return super.handle(error, ctx)
   }
 
