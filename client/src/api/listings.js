@@ -2,7 +2,7 @@ import { MOCK_LISTINGS } from './mockListings.js';
 import { normalizeKey } from '../lib/constants.js';
 
 // Adaptateur annonces. Par défaut il sert les données fictives ; avec
-// VITE_LISTINGS_SOURCE=api il interroge l'API Express (contrat proposé dans
+// VITE_LISTINGS_SOURCE=api il interroge l'API AdonisJS (contrat proposé dans
 // PAND-8, à confirmer par PAND-7) :
 //   GET /api/listings?type=&category=  → Listing[] (ou { listings: Listing[] })
 //   GET /api/listings/:id              → Listing (ou { listing: Listing }), 404 sinon
@@ -36,7 +36,6 @@ const mockSource = {
     await delay(150);
     return MOCK_LISTINGS.filter(
       (l) =>
-        l.status !== 'terminee' &&
         (!type || l.type === type) &&
         (!category || l.category === category),
     );
@@ -75,7 +74,12 @@ const source = LISTINGS_SOURCE === 'api' ? apiSource : mockSource;
 
 export async function listListings(filters, signal) {
   const listings = await source.list(filters, signal);
-  return listings.map(normalizeListing).sort(byNewest);
+  // Les annonces terminées ne sont jamais proposées à la découverte, même si
+  // l'API les renvoyait.
+  return listings
+    .map(normalizeListing)
+    .filter((l) => l.status !== 'terminee')
+    .sort(byNewest);
 }
 
 export async function getListing(id, signal) {

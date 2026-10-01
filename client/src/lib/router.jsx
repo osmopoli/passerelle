@@ -1,6 +1,6 @@
 import { useSyncExternalStore } from 'react';
 
-// Mini-routeur basé sur l'History API : Express renvoie déjà index.html pour
+// Mini-routeur basé sur l'History API : AdonisJS renvoie déjà index.html pour
 // toute route hors /api, ce qui évite d'ajouter une dépendance.
 
 const NAV_EVENT = 'passerelle:navigate';
