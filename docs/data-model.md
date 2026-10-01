@@ -56,6 +56,10 @@ Relations : `request.listing`, `request.requester` ; côté User : `user.listing
 
 Chaque constante expose `{ clé: libellé }` et un tableau `*_VALUES` (validateurs VineJS, selects du front).
 
+## Migrations
+
+`users` est créée par la migration du starter (déjà déployée), puis complétée par `1790883760695_alter_users_table` : ajout de `zone` (lignes existantes → `mamoudzou`) et passage de `full_name` en `NOT NULL` 100 (nom manquant → partie locale de l'email). Viennent ensuite `listings` puis `exchange_requests`.
+
 ## Choix
 
 - Zone et catégorie en `varchar`, validées par l'app : on peut ajuster les listes sans `ALTER ENUM`. Les types et statuts, figés par le cadrage, sont en `ENUM` pour garantir l'intégrité en base.
