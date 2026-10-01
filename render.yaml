@@ -1,6 +1,21 @@
+# Déploiement alternatif (la cible principale est HODI/cPanel, voir README).
+# Render ne fournit pas de MySQL managé : renseigner une base MySQL externe.
 services:
   - type: web
     name: passerelle
     runtime: docker
     plan: free
     healthCheckPath: /api/health
+    envVars:
+      - key: APP_KEY
+        generateValue: true
+      - key: DB_HOST
+        sync: false
+      - key: DB_PORT
+        value: "3306"
+      - key: DB_USER
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: DB_DATABASE
+        sync: false

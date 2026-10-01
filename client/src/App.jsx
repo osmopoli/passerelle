@@ -4,7 +4,7 @@ export default function App() {
   const [api, setApi] = useState('chargement…');
 
   useEffect(() => {
-    fetch('/api/health')
+    fetch(`${import.meta.env.BASE_URL}api/health`)
       .then((res) => (res.ok ? res.json() : Promise.reject(res.status)))
       .then((data) => setApi(data.status))
       .catch(() => setApi('injoignable'));
