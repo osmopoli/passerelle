@@ -58,7 +58,7 @@ Chaque constante expose `{ clé: libellé }` et un tableau `*_VALUES` (validateu
 
 ## Migrations
 
-`users` est créée par la migration du starter (déjà déployée), puis complétée par `1790883760695_alter_users_table` : ajout de `zone` (lignes existantes → `mamoudzou`) et passage de `full_name` en `NOT NULL` 100 (nom manquant → partie locale de l'email). Viennent ensuite `listings` puis `exchange_requests`.
+`users` est créée par la migration du starter (déjà déployée), puis complétée par `1790883760695_alter_users_table` : ajout de `zone` (lignes existantes → zone provisoire `mamoudzou`) et passage de `full_name` en `NOT NULL` 100 (nom manquant → partie locale de l'email). Le backfill est écrit en JS (portable) et logue un `WARN` avec les ids concernés s'il y a des comptes existants : leur zone est à faire corriger. Viennent ensuite `listings` puis `exchange_requests`.
 
 ## Choix
 
