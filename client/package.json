@@ -10,6 +10,8 @@
     "test": "node --test"
   },
   "dependencies": {
+    "@fontsource/atkinson-hyperlegible": "^5.3.0",
+    "@fontsource/shrikhand": "^5.3.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0"
   },

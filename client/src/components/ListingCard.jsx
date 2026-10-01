@@ -1,33 +1,52 @@
 import { Link } from '../lib/router.jsx';
-import { categoryLabel, zoneLabel } from '../lib/constants.js';
-import { StatusBadge, TypeBadge } from './Badges.jsx';
+import { categoryLabel, statusLabel, typeLabel, zoneLabel } from '../lib/constants.js';
+
+// Étiquette cousue en haut de la carte : safran pour une offre, salouva pour
+// une demande.
+const TYPE_TAG = {
+  offre: 'bg-saffron text-ink',
+  demande: 'bg-salouva text-white',
+};
 
 export default function ListingCard({ listing }) {
+  // Une annonce déjà demandée ou acceptée reste visible mais passe au second
+  // plan : fond brume, pas de chant d'enseigne.
+  const available = listing.status === 'disponible';
+
   return (
-    <article className="relative flex h-full flex-col rounded-2xl bg-white p-4 shadow-sm ring-1 ring-slate-200 transition hover:shadow-md hover:ring-emerald-600/40 focus-within:ring-2 focus-within:ring-emerald-600">
-      <div className="flex flex-wrap items-center gap-2">
-        <TypeBadge type={listing.type} />
-        <StatusBadge status={listing.status} />
-      </div>
-      <h3 className="mt-3 text-lg font-semibold leading-snug text-slate-900">
+    <article
+      className={`relative flex h-full flex-col rounded-card border-2 border-ink px-4 pb-4 ${
+        available ? 'bg-white shadow-sign' : 'bg-mist'
+      } focus-within:outline-3 focus-within:outline-offset-2 focus-within:outline-lagoon`}
+    >
+      <p className={`self-start rounded-b-control px-3 py-1 text-sm font-bold ${TYPE_TAG[listing.type] ?? 'bg-ink text-white'}`}>
+        {typeLabel(listing.type)}
+      </p>
+      <h3 className="mt-3 text-lg font-bold leading-snug">
         {/* Le lien s'étend à toute la carte via ::after. */}
         <Link
           to={`/annonces/${encodeURIComponent(listing.id)}`}
-          className="after:absolute after:inset-0 after:rounded-2xl focus:outline-none"
+          className="after:absolute after:inset-0 after:rounded-card focus:outline-none"
         >
           {listing.title}
         </Link>
       </h3>
-      <p className="mt-2 line-clamp-2 text-sm text-slate-600">{listing.description}</p>
-      <dl className="mt-auto flex flex-wrap gap-x-4 gap-y-1 pt-4 text-sm text-slate-600">
-        <div className="flex gap-1">
+      <p className="mt-1.5 line-clamp-2 text-ink-muted">{listing.description}</p>
+      <dl className="mt-auto grid grid-cols-[1fr_auto] gap-x-4 gap-y-0.5 pt-4 text-sm">
+        <div>
           <dt className="sr-only">Catégorie</dt>
           <dd>{categoryLabel(listing.category)}</dd>
         </div>
+        <div className="row-span-2 self-end text-right">
+          <dt className="sr-only">Statut</dt>
+          <dd className={available ? 'font-bold text-lagoon' : 'font-bold text-ink-muted'}>
+            {statusLabel(listing.status)}
+          </dd>
+        </div>
         {listing.author?.zone && (
-          <div className="flex gap-1">
+          <div>
             <dt className="sr-only">Zone</dt>
-            <dd>📍 {zoneLabel(listing.author.zone)}</dd>
+            <dd className="text-ink-muted">{zoneLabel(listing.author.zone)}</dd>
           </div>
         )}
       </dl>
