@@ -42,6 +42,27 @@ Une seule commande démarre les deux applications :
 
 `GET /api/health` renvoie `{"status":"ok","service":"passerelle","database":"ok|error","time":"…"}`.
 
+### API compte
+
+Authentification par token (`Authorization: Bearer <token>`, valable 30 jours). Mots de passe hachés en bcrypt.
+
+| Route | Accès | Effet |
+| ----- | ----- | ----- |
+| `GET /api/meta` | public | Liste des zones `{ value, label }` |
+| `POST /api/auth/register` | public | `{ fullName, email, password, zone }` → 201 `{ user, token }` |
+| `POST /api/auth/login` | public | `{ email, password }` → `{ user, token }` (400 si identifiants faux) |
+| `POST /api/auth/logout` | token | Révoque le token courant (204) |
+| `GET /api/me` | token | Profil connecté |
+| `PATCH /api/me` | token | `{ fullName?, zone? }` |
+
+Sans token valide, les routes privées renvoient 401. Erreurs de validation : 422 `{ errors: [{ field, message }] }`.
+
+### Tests
+
+```bash
+cd server && node ace test   # nécessite server/.env.test (NODE_ENV=test) et une base MySQL migrée
+```
+
 ## Build de production
 
 ```bash

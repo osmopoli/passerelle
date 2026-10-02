@@ -1,7 +1,7 @@
 import { Link } from '../lib/router.jsx';
 import { LISTINGS_SOURCE } from '../api/listings.js';
 
-export default function Layout({ children }) {
+export default function Layout({ user, children }) {
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900">
       <a
@@ -15,9 +15,15 @@ export default function Layout({ children }) {
           <Link to="/" className="text-xl font-bold tracking-tight text-emerald-700">
             PASSERELLE
           </Link>
-          <nav aria-label="Navigation principale">
+          <nav aria-label="Navigation principale" className="flex items-center gap-4">
             <Link to="/" className="text-sm font-medium text-slate-700 hover:text-emerald-700">
               Découvrir
+            </Link>
+            <Link
+              to={user ? '/profil' : '/connexion'}
+              className="rounded-lg bg-emerald-700 px-3 py-1.5 text-sm font-semibold text-white hover:bg-emerald-800"
+            >
+              {user ? 'Mon profil' : 'Se connecter'}
             </Link>
           </nav>
         </div>
