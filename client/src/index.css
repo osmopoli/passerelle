@@ -1,1 +1,40 @@
 @import "tailwindcss";
+
+/*
+ * Tokens visuels PASSERELLE (PAND-19). Toute couleur, police, rayon ou ombre
+ * de l'interface passe par ces variables : pas de valeur codée en dur.
+ *
+ * Inspiration : murs blanchis à la chaux, lagon, et les couleurs franches des
+ * salouvas et des enseignes peintes des doukas. Offre = safran, demande =
+ * salouva : la couleur porte une information, elle ne décore pas.
+ * Contrastes vérifiés (WCAG AA) : ink/white 13.9, ink-muted/white 6.5,
+ * ink-muted/mist 5.5, lagoon/white 5.9, ink/saffron 7.6, white/salouva 7.4.
+ */
+@theme {
+  /* La palette Tailwind par défaut reste chargée tant que les écrans non
+     restylés (détail, 404) l'utilisent ; à retirer (`--color-*: initial`)
+     quand tout le parcours sera passé sur ces tokens. */
+  --color-ink: #10303a;
+  --color-ink-muted: #4a626a;
+  --color-mist: #e4eeec;
+  --color-lagoon: #00706f;
+  --color-saffron: #f4b400;
+  --color-salouva: #a3195b;
+
+  --font-sans: "Atkinson Hyperlegible", system-ui, sans-serif;
+  --font-display: "Shrikhand", "Atkinson Hyperlegible", serif;
+
+  /* Le rayon suit la hiérarchie : la carte est un panneau, le contrôle un bouton. */
+  --radius-card: 14px;
+  --radius-control: 8px;
+
+  /* Une seule ombre : le chant d'une enseigne peinte, pas un flou gris. */
+  --shadow-sign: 0 3px 0 var(--color-ink);
+}
+
+@layer base {
+  :focus-visible {
+    outline: 3px solid var(--color-lagoon);
+    outline-offset: 2px;
+  }
+}

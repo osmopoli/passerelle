@@ -2,6 +2,14 @@ import { CATEGORIES, TYPES } from '../lib/constants.js';
 
 const TYPE_OPTIONS = [{ value: '', label: 'Tout' }, ...TYPES.map((t) => ({ ...t, label: `${t.label}s` }))];
 
+// L'option cochée prend la couleur de son type : on retrouve le même code
+// (safran = offre, salouva = demande) que sur les cartes.
+const CHECKED_STYLES = {
+  '': 'peer-checked:bg-ink peer-checked:text-white',
+  offre: 'peer-checked:bg-saffron peer-checked:text-ink',
+  demande: 'peer-checked:bg-salouva peer-checked:text-white',
+};
+
 export default function Filters({ type, category, onChange }) {
   return (
     <form
@@ -10,10 +18,10 @@ export default function Filters({ type, category, onChange }) {
       aria-label="Filtrer les annonces"
     >
       <fieldset>
-        <legend className="mb-1.5 text-sm font-medium text-slate-700">Type</legend>
-        <div className="inline-flex rounded-xl bg-slate-100 p-1">
+        <legend className="mb-1.5 font-bold">Type</legend>
+        <div className="flex overflow-hidden rounded-control border-2 border-ink">
           {TYPE_OPTIONS.map((option) => (
-            <label key={option.value || 'all'} className="cursor-pointer">
+            <label key={option.value || 'all'} className="flex-1 cursor-pointer border-ink not-first:border-l-2">
               <input
                 type="radio"
                 name="type"
@@ -22,7 +30,9 @@ export default function Filters({ type, category, onChange }) {
                 onChange={() => onChange({ type: option.value, category })}
                 className="peer sr-only"
               />
-              <span className="block rounded-lg px-4 py-2 text-sm font-medium text-slate-600 peer-checked:bg-white peer-checked:text-emerald-800 peer-checked:shadow-sm peer-focus-visible:ring-2 peer-focus-visible:ring-emerald-600">
+              <span
+                className={`block px-4 py-2 text-center font-bold text-ink peer-focus-visible:outline-3 peer-focus-visible:-outline-offset-4 peer-focus-visible:outline-lagoon ${CHECKED_STYLES[option.value]}`}
+              >
                 {option.label}
               </span>
             </label>
@@ -30,15 +40,15 @@ export default function Filters({ type, category, onChange }) {
         </div>
       </fieldset>
 
-      <div className="flex flex-col sm:min-w-56">
-        <label htmlFor="filter-category" className="mb-1.5 text-sm font-medium text-slate-700">
+      <div className="flex flex-col sm:min-w-64">
+        <label htmlFor="filter-category" className="mb-1.5 font-bold">
           Catégorie
         </label>
         <select
           id="filter-category"
           value={category}
           onChange={(e) => onChange({ type, category: e.target.value })}
-          className="rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 focus:border-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-600/40"
+          className="rounded-control border-2 border-ink bg-white px-3 py-2 text-ink"
         >
           <option value="">Toutes les catégories</option>
           {CATEGORIES.map((c) => (
