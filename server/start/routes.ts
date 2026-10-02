@@ -18,6 +18,7 @@ const AuthController = () => import('#controllers/auth_controller')
 const ProfileController = () => import('#controllers/profile_controller')
 const ListingsController = () => import('#controllers/listings_controller')
 const ExchangeRequestsController = () => import('#controllers/exchange_requests_controller')
+const MeController = () => import('#controllers/me_controller')
 
 router
   .group(() => {
@@ -71,6 +72,14 @@ router
     router
       .post('/requests/:id/refuse', [ExchangeRequestsController, 'refuse'])
       .where('id', router.matchers.number())
+      .use(middleware.auth())
+
+    router
+      .group(() => {
+        router.get('/listings', [MeController, 'listings'])
+        router.get('/requests', [MeController, 'requests'])
+      })
+      .prefix('/me')
       .use(middleware.auth())
 
     router.any('/*', async ({ response }) => {
