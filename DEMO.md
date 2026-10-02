@@ -7,6 +7,7 @@ Production : https://keepitsimple.mayotte.webcup.hodi.cloud/ — à présenter s
 1. `GET /api/health` → `{"status":"ok","database":"ok"}`.
 2. Rejouer le seed pour repartir d'un état propre :
    `cd server/build && node ace db:seed` (comptes remis à zéro par e-mail, annonces de démo recréées).
+   **En prod, cette commande est lancée uniquement par osmopoli8.** Aucun agent ne lance le seed ni les migrations en prod.
 3. Vider le stockage local du navigateur de démo (`passerelle_token`, `passerelle:sent-requests`).
 4. Ouvrir deux onglets : un en navigation normale, un en navigation privée (deux comptes en parallèle).
 5. Préparer le plan B (voir plus bas) sur le même appareil, hors ligne.
@@ -28,7 +29,7 @@ Ces comptes sont publics (mot de passe dans le dépôt). Ils ne doivent contenir
 | Temps | Écran | Action | Ce qu'on dit |
 | --- | --- | --- | --- |
 | 0:00 | Accueil | Présenter la promesse | « Proposez ou trouvez un objet, un service ou un coup de main près de chez vous. » |
-| 0:15 | Inscription (onglet 1) | Créer un compte « Jury » avec une zone | Compte et zone en 20 secondes, sans données superflues. |
+| 0:15 | `/connexion`, onglet « Inscription » (onglet 1) | Créer un compte « Jury » avec une zone | Compte et zone en 20 secondes, sans données superflues. |
 | 0:40 | Découverte | Filtrer par type puis par catégorie, ouvrir un détail | Les annonces terminées n'apparaissent plus. |
 | 1:00 | `/publier` | Publier une offre « Prêt d'une échelle », disponibilité en texte libre | L'annonce démarre au statut **disponible**. |
 | 1:25 | Onglet 2 (privé), connecté en Ibrahim | Ouvrir l'annonce, envoyer une demande avec un message | Un seul message par demande ; l'annonce passe à **demandée**. |
@@ -62,13 +63,17 @@ Variante refus, si on vous la demande (30 s) : connecté en Amina, « Soutien en
 
 ## Bugs bloquants
 
-État au 02/10/2026, 00h10.
+État au 02/10/2026, 02h00. PR déjà mergées : #5 (annonces), #6 (auth), #8 (demande d'échange).
 
 | # | Problème | Statut |
 | --- | --- | --- |
-| B1 | La prod n'expose que `/api/health` : `/api/listings` et `/api/me` répondent 404. Les PR #4 à #12 et #14 ne sont pas mergées. | Ouvert — merger dans l'ordre ci-dessous, puis migrations et seed en prod |
-| B2 | Pas de page d'inscription dans le front intégré : le routeur (`client/src/App.jsx`) n'a que `/connexion`. L'écran d'inscription de PAND-5 (PR #6) remplace tout `App.jsx`, ce qui crée un conflit avec le routeur de PAND-8/9/15/16. | Ouvert — porter `AuthScreen` en route `/inscription` lors du merge de la PR #6 |
+| B1 | En prod, `/api/listings` répond **500** (corps vide, pas de fuite de trace). Cause probable : migrations des PR #5, #6 et #8 pas encore lancées en prod. `/api/health` et `/api/meta` répondent 200. Restent à merger : #7, #10, #11, #12 (API) et #4, #9, #13, #14 (front). | Ouvert — migrations puis seed par osmopoli8, puis merger dans l'ordre ci-dessous |
+| B2 | Inscription : la PR #6 (mergée) ne crée pas de route `/inscription`, mais `/connexion` affiche `AuthScreen` avec un onglet « Inscription ». La PR #9 (rebasée sur `main`) garde cet écran. | Résolu — le parcours passe par `/connexion` → « Inscription ». À revérifier après le merge de #4 et #14 (conflits sur `App.jsx`) |
 | B3 | Le front est buildé en mode `mock` par défaut (`VITE_LISTINGS_SOURCE`). Sans configuration, la prod affiche des données fictives. | Corrigé dans cette PR : `client/.env.production` force le mode `api` |
-| B4 | Les PR backend #8, #10, #11 et #12 partent toutes de `main` et modifient `server/start/routes.ts` : leurs routes (demande, accepter/refuser, clôture, `/me/*`) entrent en conflit au merge. | Ouvert — à résoudre au merge, puis vérifier la liste des routes |
+| B4 | Les PR backend #10, #11 et #12 partent de `main` et modifient `server/start/routes.ts` : leurs routes (accepter/refuser, clôture, `/me/*`) entrent en conflit au merge. | Ouvert — à résoudre au merge, puis vérifier la liste des routes |
 
-Ordre de merge proposé : #5 (annonces) → #6 (auth) → #7 (seed) → #8 → #10 → #11 → #12 → #4 → #9 → #14 → cette PR (en dernier, à cause de B3).
+Ordre de merge proposé pour la suite :
+
+1. API : #7 (seed) → #10 (accepter/refuser) → #11 (clôture) → #12 (`/me/*`).
+2. Front : #9 (demande, déjà rebasée sur `main`) → #4 (publication, à rebaser) → #14 (tableau de bord, à rebaser) → #13 (PAND-19, restyle de la découverte : il touche `DiscoverPage`, `Filters`, `Layout` et `ListingCard`, donc on le rebase après la chaîne fonctionnelle).
+3. Cette PR, en dernier (à cause de B3), une fois les migrations et le seed lancés et `/api/listings` à 200.
