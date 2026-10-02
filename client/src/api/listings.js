@@ -21,6 +21,8 @@ export function normalizeListing(raw) {
   return {
     ...raw,
     id: String(raw.id),
+    // Sert à masquer « Demander » sur ses propres annonces.
+    authorId: String(raw.userId ?? raw.user_id ?? rawAuthor?.id ?? ''),
     type: normalizeKey(raw.type),
     category: normalizeKey(raw.category),
     status: normalizeKey(raw.status),
@@ -54,6 +56,12 @@ function readStatuses() {
 
 export function setMockListingStatus(id, status) {
   sessionStorage.setItem(MOCK_STATUS_KEY, JSON.stringify({ ...readStatuses(), [id]: status }));
+}
+
+// Première demande fictive (voir requests.js) : `disponible` → `demandee`.
+export function markMockListingRequested(id) {
+  const listing = allMockListings().find((l) => l.id === id);
+  if (listing?.status === 'disponible') setMockListingStatus(id, 'demandee');
 }
 
 // Annonces fictives de départ et publiées dans l'onglet (PAND-9), avec leur statut courant.
