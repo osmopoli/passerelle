@@ -1,4 +1,6 @@
 import { MOCK_LISTINGS } from './mockListings.js';
+import { withCreatedListings } from './mockCreated.js';
+import { api } from './client.js';
 import { normalizeKey } from '../lib/constants.js';
 
 // Adaptateur annonces. Par défaut il sert les données fictives ; avec
@@ -6,6 +8,7 @@ import { normalizeKey } from '../lib/constants.js';
 // PAND-8, à confirmer par PAND-7) :
 //   GET /api/listings?type=&category=  → Listing[] (ou { listings: Listing[] })
 //   GET /api/listings/:id              → Listing (ou { listing: Listing }), 404 sinon
+//   POST /api/listings (Bearer)        → 201 Listing ; 400 { errors: [{ field, message }] } ; 401
 export const LISTINGS_SOURCE = import.meta.env.VITE_LISTINGS_SOURCE === 'api' ? 'api' : 'mock';
 
 const API = `${import.meta.env.BASE_URL}api`;
@@ -68,9 +71,16 @@ const apiSource = {
     const data = await getJson(`${API}/listings/${encodeURIComponent(id)}`, signal);
     return data.listing ?? data;
   },
+  async create(values) {
+    // `api` ajoute le token et lève une erreur portant `status` et `fields`.
+    const data = await api('/listings', { method: 'POST', body: values });
+    const listing = data?.listing ?? data;
+    if (!listing?.id) throw new Error("L'annonce a été envoyée mais la réponse de l'API est vide.");
+    return listing;
+  },
 };
 
-const source = LISTINGS_SOURCE === 'api' ? apiSource : mockSource;
+const source = LISTINGS_SOURCE === 'api' ? apiSource : withCreatedListings(mockSource);
 
 export async function listListings(filters, signal) {
   const listings = await source.list(filters, signal);
@@ -84,4 +94,8 @@ export async function listListings(filters, signal) {
 
 export async function getListing(id, signal) {
   return normalizeListing(await source.get(id, signal));
+}
+
+export async function createListing(values) {
+  return normalizeListing(await source.create(values));
 }
