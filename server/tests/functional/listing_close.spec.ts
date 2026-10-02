@@ -2,6 +2,7 @@ import { test } from '@japa/runner'
 import testUtils from '@adonisjs/core/services/test_utils'
 import User from '#models/user'
 import Listing from '#models/listing'
+import ExchangeRequest from '#models/exchange_request'
 import type { ListingStatus } from '#constants/domain'
 
 async function createUser(email: string) {
@@ -68,6 +69,29 @@ test.group('API clôture d’une annonce', (group) => {
 
     response.assertStatus(403)
     assert.equal(await statusOf(listing), 'acceptee')
+  })
+
+  test('le demandeur accepté reçoit 403 : seul l’auteur termine l’échange', async ({
+    client,
+    assert,
+  }) => {
+    const listing = await createListing(await createUser('auteur@test.local'))
+    const requester = await createUser('demandeur@test.local')
+    const exchangeRequest = await ExchangeRequest.create({
+      listingId: listing.id,
+      requesterId: requester.id,
+      message: 'Bonjour',
+      status: 'acceptee',
+    })
+
+    const response = await client
+      .post(`/api/listings/${listing.id}/close`)
+      .bearerToken(await bearer(requester))
+
+    response.assertStatus(403)
+    assert.equal(await statusOf(listing), 'acceptee')
+    await exchangeRequest.refresh()
+    assert.equal(exchangeRequest.status, 'acceptee')
   })
 
   for (const status of ['disponible', 'demandee', 'terminee'] as const) {
