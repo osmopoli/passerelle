@@ -43,34 +43,39 @@ Variante refus, si on vous la demande (30 s) : connecté en Amina, « Soutien en
 ## Plan B (panne réseau ou prod indisponible)
 
 1. Lancer le projet en local, sans réseau, avec les données fictives du front : `npm run dev --prefix client` (mode `mock` par défaut). Tout le parcours fonctionne sans API.
-2. Avoir les captures 360 px du parcours sous la main, sur l'appareil de démo : découverte, détail, demande envoyée, tableau de bord avant et après acceptation, après clôture, « Mes demandes ». Celles de PAND-16 (mode fictif) sont déjà jointes à l'issue. Les remplacer par des captures de prod dès que la recette passe.
-3. En dernier recours, une vidéo écran de 3 minutes du script ci-dessus, enregistrée après la recette en prod.
+2. Avoir sur l'appareil de démo les captures 360 px du parcours en prod, prises à la recette du 02/10 et jointes à PAND-17 : inscription, publication, détail, demande envoyée, tableau de bord avant et après acceptation, « Mes demandes », après clôture.
+3. En dernier recours, une vidéo écran de 3 minutes du script ci-dessus.
 
 ## Recette du parcours critique en prod
 
-À cocher en prod, à 360 px, après le merge de toutes les PR du parcours, les migrations et le seed.
+Jouée le 02/10/2026 vers 07h40 (heure de Mayotte), en prod, après le merge des PR du parcours, les migrations et le seed. Interface en 360 px (Playwright, deux sessions séparées), API par script (43 contrôles, 42 OK et 1 écart de test sans impact). Toutes les annonces de recette (`[Recette] …`, comptes `recette-*@example.com`) ont été clôturées : elles n'apparaissent pas dans la découverte.
 
-- [ ] Inscription d'un nouveau compte avec zone, puis connexion et déconnexion
-- [ ] Découverte : filtres type et catégorie, page détail
-- [ ] Publication d'une annonce → statut `disponible`
-- [ ] Demande depuis un 2e compte → annonce `demandee` ; une 2e demande du même compte est refusée (409)
-- [ ] L'auteur ne peut pas demander sa propre annonce (403)
-- [ ] Acceptation → demande `acceptee`, autres demandes `refusee`, annonce `acceptee`
-- [ ] Un autre compte ne peut ni accepter, ni refuser, ni clôturer (403)
-- [ ] Clôture par l'auteur → `terminee`, l'annonce disparaît de la découverte
-- [ ] Refus de la dernière demande en attente → annonce `disponible`
-- [ ] Tableau de bord : états vides des deux onglets
+- [x] Inscription d'un nouveau compte avec zone (interface : `/connexion` → « Inscription »), déconnexion, jeton révoqué (401)
+- [x] Découverte : liste des annonces du seed, filtres type et catégorie (API), page détail sans e-mail de l'auteur
+- [x] Publication d'une annonce → statut `disponible` (interface)
+- [x] Demande depuis un 2e compte → annonce `demandee` (interface) ; une 2e demande du même compte est refusée (409)
+- [x] L'auteur ne peut pas demander sa propre annonce : « C'est votre annonce » dans l'interface, 403 côté API
+- [x] Acceptation → demande `acceptee`, autres demandes `refusee`, annonce `acceptee` (interface et API)
+- [x] Un autre compte ne peut ni accepter, ni refuser, ni clôturer (403) ; le demandeur ne peut pas accepter sa propre demande (403) ; sans jeton (401)
+- [x] Clôture par l'auteur → `terminee`, l'annonce disparaît de la découverte (interface)
+- [x] Refus de la dernière demande en attente → annonce `disponible` (API)
+- [x] Tableau de bord : état vide « Mes demandes » vérifié en prod ; état vide « Mes annonces » vérifié en mode fictif (PAND-16)
+- [x] Aucun débordement horizontal à 360 px (`/`, détail, `/publier`, `/tableau-de-bord`, `/connexion`)
 
 ## Bugs bloquants
 
-État au 02/10/2026, 07h10 (heure de Mayotte). Mergées : API #5, #6, #7, #8, #10, #11, #12 ; front #4 (publication) et #14 (tableau de bord). Ouvertes : #9 (demande), #13 (restyle), cette PR.
+État au 02/10/2026, 07h45 (heure de Mayotte). Toutes les PR du parcours sont mergées (#4 à #12, #14, #15). Seule la PR #13 (restyle, non bloquante) reste ouverte.
 
 | # | Problème | Statut |
 | --- | --- | --- |
-| B1 | En prod, `/api/listings` répond **500** (corps vide, pas de fuite de trace). `/api/health` répond 200 avec la base OK ; `/api/me` répond 401 sans jeton, comme prévu. Cause probable : migrations pas lancées en prod. | Ouvert — osmopoli8 lance `node ace migration:run --force` puis `node ace db:seed` depuis `server/build` |
-| B2 | Inscription : pas de route `/inscription`, mais `/connexion` affiche `AuthScreen` avec un onglet « Inscription ». Vérifié sur `main` après le merge de #4 et #14. | Résolu |
-| B3 | Le front est buildé en mode `mock` par défaut (`VITE_LISTINGS_SOURCE`). Sans configuration, la prod affiche des données fictives. | Corrigé dans cette PR (la PR #9 ajoute le même fichier, au contenu identique) |
-| B4 | Conflits sur `server/start/routes.ts` entre #8, #10, #11 et #12. | Résolu — sur `main`, les routes demande, accepter, refuser, clôture et `/me/*` sont présentes, toutes derrière `middleware.auth()` |
-| B5 | Le bouton « Demander » (PAND-15, PR #9) n'est pas sur `main` : la page détail n'a qu'un commentaire à sa place. Sans lui, l'étape « demande » du parcours est impossible dans l'interface. La PR #9 est `CONFLICTING`. | Ouvert — rebaser #9 sur `main` (conflits avec #4 et #14 sur `App.jsx`, `api/listings.js`, `api/requests.js`), puis merger |
+| B1 | `/api/listings` répondait 500 (migrations pas lancées en prod). | Résolu — migrations et seed lancés par osmopoli8 ; `/api/listings` répond 200 avec les annonces de démo |
+| B2 | Pas de route `/inscription`. | Résolu — inscription par `/connexion` → « Inscription », vérifiée en prod |
+| B3 | Front buildé en mode `mock` par défaut. | Résolu — `client/.env.production` (arrivé avec #9 et #15) ; la prod lit bien l'API |
+| B4 | Conflits sur `server/start/routes.ts`. | Résolu — toutes les routes du parcours sont présentes et protégées par `middleware.auth()` |
+| B5 | Bouton « Demander » absent de `main`. | Résolu — PR #9 mergée, demande vérifiée en prod |
 
-Ordre de merge pour la suite : #9 (demande) → #13 (PAND-19, restyle de la découverte) → cette PR, en dernier, une fois B1 levé (`/api/listings` à 200).
+Aucun bug bloquant ouvert. Points mineurs, à documenter, sans correction avant la démo :
+
+- `favicon.ico` répond 404 (erreur dans la console, sans effet visible).
+- La console affiche « Download the React DevTools » : le bundle de prod semble construit avec React en mode développement (plus lourd, environ 518 ko). À vérifier côté build Hodifly (`NODE_ENV`), sans effet sur le parcours.
+- Les erreurs de validation renvoient 400 (et non 422) avec `{ errors: [...] }`. C'est le contrat attendu par le front, sans trace de pile.
