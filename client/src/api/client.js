@@ -22,7 +22,8 @@ export async function api(path, { method = 'GET', body } = {}) {
     const errors = data?.errors ?? [];
     const fields = {};
     for (const e of errors) if (e.field && !fields[e.field]) fields[e.field] = e.message;
-    const error = new Error(errors[0]?.message ?? 'Une erreur est survenue.');
+    // Erreurs métier de l'API : { error: "..." } (403/409, PAND-11).
+    const error = new Error(errors[0]?.message ?? data?.error ?? 'Une erreur est survenue.');
     error.status = res.status;
     error.fields = fields;
     throw error;

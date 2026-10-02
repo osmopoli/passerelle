@@ -1,5 +1,6 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { StatusBadge, TypeBadge } from '../components/Badges.jsx';
+import RequestPanel from '../components/RequestPanel.jsx';
 import { NotFoundError, getListing } from '../api/listings.js';
 import { categoryLabel, zoneLabel } from '../lib/constants.js';
 import { Link, canGoBack } from '../lib/router.jsx';
@@ -26,8 +27,11 @@ function BackLink() {
   );
 }
 
-export default function ListingDetailPage({ id }) {
-  const { status, data: listing, error } = useAsync((signal) => getListing(id, signal), [id]);
+export default function ListingDetailPage({ id, user, onSessionExpired }) {
+  const { status, data: loaded, error } = useAsync((signal) => getListing(id, signal), [id]);
+  // Statut mis à jour localement après une demande (disponible → demandee).
+  const [statusOverride, setStatusOverride] = useState(null);
+  const listing = loaded && statusOverride ? { ...loaded, status: statusOverride } : loaded;
   const headingRef = useRef(null);
 
   useEffect(() => {
@@ -86,7 +90,12 @@ export default function ListingDetailPage({ id }) {
             {listing.author?.zone && (
               <p className="mt-1 text-slate-600">📍 {zoneLabel(listing.author.zone)}</p>
             )}
-            {/* Le bouton « Demander » arrive avec P1-1 (demande d'échange). */}
+            <RequestPanel
+              listing={listing}
+              user={user}
+              onSessionExpired={onSessionExpired}
+              onRequested={() => listing.status === 'disponible' && setStatusOverride('demandee')}
+            />
           </aside>
         </article>
       )}

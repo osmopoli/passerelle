@@ -8,10 +8,11 @@ import ListingDetailPage from './pages/ListingDetailPage.jsx';
 import NewListingPage from './pages/NewListingPage.jsx';
 import NotFoundPage from './pages/NotFoundPage.jsx';
 import { api, getToken, setToken } from './api/client.js';
+import { safeRedirect } from './lib/redirect.js';
 import { navigate, useLocation } from './lib/router.jsx';
 
 function Route({ session }) {
-  const { pathname } = useLocation();
+  const { pathname, searchParams } = useLocation();
   const { user, zones, setUser, logout, expire } = session;
 
   if (pathname === '/') return <DiscoverPage />;
@@ -20,7 +21,7 @@ function Route({ session }) {
   const detail = pathname.match(/^\/annonces\/([^/]+)\/?$/);
   if (detail) {
     const id = decodeURIComponent(detail[1]);
-    return <ListingDetailPage key={id} id={id} />;
+    return <ListingDetailPage key={id} id={id} user={user} onSessionExpired={expire} />;
   }
   if (pathname === '/connexion' || pathname === '/profil') {
     return (
@@ -32,7 +33,8 @@ function Route({ session }) {
             zones={zones}
             onAuthenticated={(u) => {
               setUser(u);
-              navigate('/');
+              // Retour explicite vers la page d'origine (?redirect=), jamais `back`.
+              navigate(safeRedirect(searchParams.get('redirect')), { replace: true });
             }}
           />
         )}
