@@ -1,5 +1,5 @@
 import { MOCK_LISTINGS } from './mockListings.js';
-import { withCreatedListings } from './mockCreated.js';
+import { createMockListing, readCreated } from './mockCreated.js';
 import { api } from './client.js';
 import { normalizeKey } from '../lib/constants.js';
 
@@ -15,15 +15,21 @@ const API = `${import.meta.env.BASE_URL}api`;
 
 export class NotFoundError extends Error {}
 
-function normalizeListing(raw) {
+export function normalizeListing(raw) {
+  // L'auteur peut être préchargé sous `author` ou `user` selon la route.
+  const rawAuthor = raw.author ?? raw.user;
   return {
     ...raw,
     id: String(raw.id),
     type: normalizeKey(raw.type),
     category: normalizeKey(raw.category),
     status: normalizeKey(raw.status),
-    author: raw.author
-      ? { ...raw.author, zone: normalizeKey(raw.author.zone) }
+    author: rawAuthor
+      ? {
+          ...rawAuthor,
+          name: rawAuthor.name ?? rawAuthor.fullName ?? rawAuthor.full_name,
+          zone: normalizeKey(rawAuthor.zone),
+        }
       : null,
   };
 }
@@ -34,10 +40,34 @@ function byNewest(a, b) {
 
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
+// Statuts imposés par une décision fictive du tableau de bord (voir dashboard.js) :
+// acceptation, refus de la dernière demande ou clôture.
+const MOCK_STATUS_KEY = 'passerelle:mock-listing-statuses';
+
+function readStatuses() {
+  try {
+    return JSON.parse(sessionStorage.getItem(MOCK_STATUS_KEY)) ?? {};
+  } catch {
+    return {};
+  }
+}
+
+export function setMockListingStatus(id, status) {
+  sessionStorage.setItem(MOCK_STATUS_KEY, JSON.stringify({ ...readStatuses(), [id]: status }));
+}
+
+// Annonces fictives de départ et publiées dans l'onglet (PAND-9), avec leur statut courant.
+export const allMockListings = () => {
+  const statuses = readStatuses();
+  return [...readCreated(), ...MOCK_LISTINGS].map((l) =>
+    statuses[l.id] ? { ...l, status: statuses[l.id] } : l,
+  );
+};
+
 const mockSource = {
   async list({ type, category } = {}) {
     await delay(150);
-    return MOCK_LISTINGS.filter(
+    return allMockListings().filter(
       (l) =>
         (!type || l.type === type) &&
         (!category || l.category === category),
@@ -45,10 +75,11 @@ const mockSource = {
   },
   async get(id) {
     await delay(100);
-    const listing = MOCK_LISTINGS.find((l) => l.id === id);
+    const listing = allMockListings().find((l) => l.id === id);
     if (!listing) throw new NotFoundError();
     return listing;
   },
+  create: createMockListing,
 };
 
 async function getJson(url, signal) {
@@ -80,7 +111,7 @@ const apiSource = {
   },
 };
 
-const source = LISTINGS_SOURCE === 'api' ? apiSource : withCreatedListings(mockSource);
+const source = LISTINGS_SOURCE === 'api' ? apiSource : mockSource;
 
 export async function listListings(filters, signal) {
   const listings = await source.list(filters, signal);
