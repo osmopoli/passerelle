@@ -9,17 +9,24 @@
  * salouva : la couleur porte une information, elle ne décore pas.
  * Contrastes vérifiés (WCAG AA) : ink/white 13.9, ink-muted/white 6.5,
  * ink-muted/mist 5.5, lagoon/white 5.9, ink/saffron 7.6, white/salouva 7.4.
+ * Ajouts PAND-23 (statuts, erreurs) : ink/mist 11.8, lagoon/mist 5.0,
+ * danger/white 6.6, danger/danger-wash 5.6, ink/danger-wash 12.0.
  */
 @theme {
   /* La palette Tailwind par défaut reste chargée tant que les écrans non
      restylés (détail, 404) l'utilisent ; à retirer (`--color-*: initial`)
      quand tout le parcours sera passé sur ces tokens. */
+  /* Déclaré ici pour survivre au retrait de la palette par défaut (PAND-27). */
+  --color-white: #ffffff;
   --color-ink: #10303a;
   --color-ink-muted: #4a626a;
   --color-mist: #e4eeec;
   --color-lagoon: #00706f;
   --color-saffron: #f4b400;
   --color-salouva: #a3195b;
+  /* Erreur et refus : un rouge brique, distinct du salouva qui signifie « demande ». */
+  --color-danger: #b42318;
+  --color-danger-wash: #fbeae8;
 
   --font-sans: "Atkinson Hyperlegible", system-ui, sans-serif;
   --font-display: "Shrikhand", "Atkinson Hyperlegible", serif;
@@ -36,5 +43,78 @@
   :focus-visible {
     outline: 3px solid var(--color-lagoon);
     outline-offset: 2px;
+  }
+}
+
+/*
+ * Composants partagés (PAND-23) : une seule source pour les boutons et le
+ * panneau. Couche `components` : une classe utilitaire posée à côté
+ * (`w-full`, `bg-mist`, `shadow-none`) l'emporte, sans `!important`.
+ */
+@layer components {
+  /* Le panneau reprend la carte de Découverte : bordure nuit, chant d'enseigne. */
+  .panel {
+    background-color: var(--color-white);
+    border: 2px solid var(--color-ink);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-sign);
+  }
+
+  /* Principal : une action par écran (Se connecter, Demander, Publier). */
+  .btn-primary,
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 2.75rem;
+    padding: 0.5rem 0.875rem;
+    border: 2px solid;
+    border-radius: var(--radius-control);
+    font-weight: 700;
+    line-height: 1.25;
+    text-align: center;
+    cursor: pointer;
+    transition:
+      background-color 150ms ease-out,
+      border-color 150ms ease-out,
+      color 150ms ease-out;
+  }
+
+  .btn-primary {
+    background-color: var(--color-lagoon);
+    border-color: var(--color-lagoon);
+    color: var(--color-white);
+  }
+
+  .btn-primary:hover:not(:disabled, [aria-disabled='true']) {
+    background-color: var(--color-ink);
+    border-color: var(--color-ink);
+  }
+
+  /* Secondaire : même gabarit, contour nuit, pour l'action d'à côté (Annuler, Refuser). */
+  .btn-secondary {
+    background-color: var(--color-white);
+    border-color: var(--color-ink);
+    color: var(--color-ink);
+  }
+
+  .btn-secondary:hover:not(:disabled, [aria-disabled='true']) {
+    background-color: var(--color-mist);
+  }
+
+  .btn-primary:disabled,
+  .btn-secondary:disabled,
+  .btn-primary[aria-disabled='true'],
+  .btn-secondary[aria-disabled='true'] {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .btn-primary,
+    .btn-secondary {
+      transition: none;
+    }
   }
 }

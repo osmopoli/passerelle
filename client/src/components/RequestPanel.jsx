@@ -5,8 +5,8 @@ import { navigate } from '../lib/router.jsx';
 
 const REQUESTABLE = ['disponible', 'demandee'];
 
-const primaryButton =
-  'w-full rounded-xl bg-emerald-700 px-4 py-3 font-semibold text-white hover:bg-emerald-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60';
+// Bouton principal partagé (index.css) ; le reste du panneau suit dans PAND-24.
+const primaryButton = 'btn-primary w-full';
 
 // `user` vient de la session de l'application (App.jsx, GET /api/me) ;
 // `onSessionExpired` oublie le token quand l'API répond 401.

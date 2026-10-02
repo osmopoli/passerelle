@@ -17,7 +17,7 @@ export default function Layout({ user, children }) {
           <Link to="/" className="font-display text-xl leading-none text-ink sm:text-2xl">
             passerelle
           </Link>
-          <nav aria-label="Navigation principale" className="ml-auto flex flex-wrap items-center gap-3 sm:gap-4">
+          <nav aria-label="Navigation principale" className="ml-auto flex flex-wrap items-center gap-2.5 sm:gap-4">
             <Link to="/" className={`hidden sm:inline ${linkClass}`}>
               Découvrir
             </Link>
@@ -36,7 +36,7 @@ export default function Layout({ user, children }) {
             )}
             <Link
               to={user ? '/profil' : '/connexion'}
-              className="rounded-control bg-lagoon px-3 py-1.5 font-bold text-white hover:bg-ink"
+              className="btn-primary"
             >
               {user ? 'Mon profil' : 'Se connecter'}
             </Link>
