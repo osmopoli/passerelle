@@ -1,27 +1,20 @@
 import { Link } from '../lib/router.jsx';
-import { categoryLabel, statusLabel, typeLabel, zoneLabel } from '../lib/constants.js';
-
-// Étiquette cousue en haut de la carte : safran pour une offre, salouva pour
-// une demande.
-const TYPE_TAG = {
-  offre: 'bg-saffron text-ink',
-  demande: 'bg-salouva text-white',
-};
+import { categoryLabel, zoneLabel } from '../lib/constants.js';
+import { StatusBadge, TypeBadge } from './Badges.jsx';
 
 export default function ListingCard({ listing }) {
   // Une annonce déjà demandée ou acceptée reste visible mais passe au second
-  // plan : fond brume, pas de chant d'enseigne.
+  // plan : panneau partagé, mais fond brume et sans chant d'enseigne.
   const available = listing.status === 'disponible';
 
   return (
     <article
-      className={`relative flex h-full flex-col rounded-card border-2 border-ink px-4 pb-4 ${
-        available ? 'bg-white shadow-sign' : 'bg-mist'
+      className={`panel relative flex h-full flex-col px-4 pb-4 ${
+        available ? '' : 'bg-mist shadow-none'
       } focus-within:outline-3 focus-within:outline-offset-2 focus-within:outline-lagoon`}
     >
-      <p className={`self-start rounded-b-control px-3 py-1 text-sm font-bold ${TYPE_TAG[listing.type] ?? 'bg-ink text-white'}`}>
-        {typeLabel(listing.type)}
-      </p>
+      {/* Étiquette cousue en haut de la carte. */}
+      <TypeBadge type={listing.type} attached as="p" />
       <h3 className="mt-3 text-lg font-bold leading-snug">
         {/* Le lien s'étend à toute la carte via ::after. */}
         <Link
@@ -39,8 +32,8 @@ export default function ListingCard({ listing }) {
         </div>
         <div className="row-span-2 self-end text-right">
           <dt className="sr-only">Statut</dt>
-          <dd className={available ? 'font-bold text-lagoon' : 'font-bold text-ink-muted'}>
-            {statusLabel(listing.status)}
+          <dd>
+            <StatusBadge status={listing.status} labelled={false} />
           </dd>
         </div>
         {listing.author?.zone && (
