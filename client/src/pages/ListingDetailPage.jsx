@@ -20,16 +20,16 @@ function BackLink() {
           window.history.back();
         }
       }}
-      className="inline-flex items-center gap-1 text-sm font-medium text-emerald-800 hover:underline"
+      className="inline-flex items-center text-sm font-medium text-emerald-800 underline underline-offset-4 hover:text-emerald-900"
     >
-      <span aria-hidden="true">←</span> Retour aux annonces
+      Retour aux annonces
     </Link>
   );
 }
 
 export default function ListingDetailPage({ id, user, onSessionExpired }) {
   const { status, data: loaded, error } = useAsync((signal) => getListing(id, signal), [id]);
-  // Statut mis à jour localement après une demande (disponible → demandee).
+  // Statut mis à jour localement après une demande (disponible devient demandee).
   const [statusOverride, setStatusOverride] = useState(null);
   const listing = loaded && statusOverride ? { ...loaded, status: statusOverride } : loaded;
   const headingRef = useRef(null);
@@ -46,7 +46,7 @@ export default function ListingDetailPage({ id, user, onSessionExpired }) {
     <>
       <BackLink />
       {status === 'loading' && (
-        <p className="mt-6 text-slate-600" role="status">Chargement de l'annonce…</p>
+        <p className="mt-6 text-slate-600" role="status">Chargement de l'annonce...</p>
       )}
       {status === 'error' && (
         <div role="alert" className="mt-6 rounded-2xl bg-red-50 p-6 text-red-800 ring-1 ring-red-200">
@@ -88,7 +88,7 @@ export default function ListingDetailPage({ id, user, onSessionExpired }) {
             <h2 id="auteur" className="text-sm font-medium text-slate-500">Publiée par</h2>
             <p className="mt-1 text-lg font-semibold">{listing.author?.name ?? 'Habitant'}</p>
             {listing.author?.zone && (
-              <p className="mt-1 text-slate-600">📍 {zoneLabel(listing.author.zone)}</p>
+              <p className="mt-1 text-slate-600">Zone : {zoneLabel(listing.author.zone)}</p>
             )}
             <RequestPanel
               listing={listing}

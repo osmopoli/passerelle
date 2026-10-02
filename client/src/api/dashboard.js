@@ -4,12 +4,12 @@ import { getToken } from './client.js';
 import { normalizeKey } from '../lib/constants.js';
 
 // Adaptateur tableau de bord. Contrats de l'API :
-//   GET  /api/me/listings  (PAND-14, PR #12) → Listing[] avec `requests` (ou `exchangeRequests`) :
+//   GET  /api/me/listings  (PAND-14, PR #12) : Listing[] avec `requests` (ou `exchangeRequests`) :
 //        [{ id, message, status, createdAt, requester: { id, fullName, zone } }]
-//   GET  /api/me/requests  (PAND-14, PR #12) → ExchangeRequest[] avec `listing.author`
-//   POST /api/requests/:id/accept  (PAND-12, PR #10) → 200 ExchangeRequest + `listing`
-//   POST /api/requests/:id/refuse  (PAND-12, PR #10) → 200 ExchangeRequest + `listing`
-//   POST /api/listings/:id/close   (PAND-13, PR #11) → 200 Listing
+//   GET  /api/me/requests  (PAND-14, PR #12) : ExchangeRequest[] avec `listing.author`
+//   POST /api/requests/:id/accept  (PAND-12, PR #10) : 200 ExchangeRequest + `listing`
+//   POST /api/requests/:id/refuse  (PAND-12, PR #10) : 200 ExchangeRequest + `listing`
+//   POST /api/listings/:id/close   (PAND-13, PR #11) : 200 Listing
 // Erreurs : 401 non connecté, 403 { error } pas l'auteur, 404, 409 { error } déjà traitée.
 
 const API = `${import.meta.env.BASE_URL}api`;

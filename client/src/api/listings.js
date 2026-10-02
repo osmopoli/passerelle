@@ -6,9 +6,9 @@ import { normalizeKey } from '../lib/constants.js';
 // Adaptateur annonces. Par défaut il sert les données fictives ; avec
 // VITE_LISTINGS_SOURCE=api il interroge l'API AdonisJS (contrat proposé dans
 // PAND-8, à confirmer par PAND-7) :
-//   GET /api/listings?type=&category=  → Listing[] (ou { listings: Listing[] })
-//   GET /api/listings/:id              → Listing (ou { listing: Listing }), 404 sinon
-//   POST /api/listings (Bearer)        → 201 Listing ; 400 { errors: [{ field, message }] } ; 401
+//   GET /api/listings?type=&category= : Listing[] (ou { listings: Listing[] })
+//   GET /api/listings/:id             : Listing (ou { listing: Listing }), 404 sinon
+//   POST /api/listings (Bearer)       : 201 Listing ; 400 { errors: [{ field, message }] } ; 401
 export const LISTINGS_SOURCE = import.meta.env.VITE_LISTINGS_SOURCE === 'api' ? 'api' : 'mock';
 
 const API = `${import.meta.env.BASE_URL}api`;
@@ -58,7 +58,7 @@ export function setMockListingStatus(id, status) {
   sessionStorage.setItem(MOCK_STATUS_KEY, JSON.stringify({ ...readStatuses(), [id]: status }));
 }
 
-// Première demande fictive (voir requests.js) : `disponible` → `demandee`.
+// Première demande fictive (voir requests.js) : `disponible` devient `demandee`.
 export function markMockListingRequested(id) {
   const listing = allMockListings().find((l) => l.id === id);
   if (listing?.status === 'disponible') setMockListingStatus(id, 'demandee');

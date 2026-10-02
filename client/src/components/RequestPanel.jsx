@@ -83,7 +83,7 @@ export default function RequestPanel({ listing, user, onRequested, onSessionExpi
           </p>
         )}
         <button type="button" disabled className={primaryButton}>
-          <span aria-hidden="true">✓ </span>Demande envoyée
+          Demande envoyée
         </button>
       </div>
     );
@@ -120,7 +120,7 @@ export default function RequestPanel({ listing, user, onRequested, onSessionExpi
             onChange={(event) => setMessage(event.target.value)}
             aria-describedby={`${counterId}${error ? ` ${errorId}` : ''}`}
             aria-invalid={tooLong || undefined}
-            placeholder="Bonjour, je suis intéressé·e. Je peux passer samedi matin."
+            placeholder="Bonjour, votre annonce m'intéresse. Je peux passer samedi matin."
             className={`mt-1.5 w-full rounded-xl border bg-white px-3 py-2.5 text-base focus:outline-none focus:ring-2 ${
               tooLong
                 ? 'border-red-500 focus:ring-red-600/30'
@@ -132,7 +132,7 @@ export default function RequestPanel({ listing, user, onRequested, onSessionExpi
           </p>
           <div className="mt-3 flex flex-col gap-2">
             <button type="submit" disabled={sending} className={primaryButton}>
-              {sending ? 'Envoi…' : 'Envoyer la demande'}
+              {sending ? 'Envoi...' : 'Envoyer la demande'}
             </button>
             <button
               type="button"

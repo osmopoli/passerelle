@@ -185,7 +185,7 @@ export default function NewListingPage({ user }) {
             aria-describedby={describe('category')}
             className={inputClass(errors.category)}
           >
-            <option value="">Choisir une catégorie…</option>
+            <option value="">Choisir une catégorie...</option>
             {CATEGORIES.map((c) => (
               <option key={c.value} value={c.value}>
                 {c.label}
@@ -226,7 +226,7 @@ export default function NewListingPage({ user }) {
             onChange={(e) => update('description', e.target.value)}
             required
             maxLength={LISTING_LIMITS.description}
-            placeholder="Décrivez ce que vous proposez ou recherchez, l'état de l'objet, les conditions…"
+            placeholder="Décrivez ce que vous proposez ou recherchez, l'état de l'objet, les conditions..."
             aria-invalid={Boolean(errors.description)}
             aria-describedby={describe('description', 'description-count')}
             className={inputClass(errors.description)}
@@ -240,7 +240,7 @@ export default function NewListingPage({ user }) {
             Disponibilité <span className="text-red-700" aria-hidden="true">*</span>
           </label>
           <p id="availability-hint" className="mb-1.5 text-sm text-slate-600">
-            En texte libre : jours, horaires, lieu de remise…
+            En texte libre : jours, horaires, lieu de remise...
           </p>
           <input
             id="availability"
@@ -266,7 +266,7 @@ export default function NewListingPage({ user }) {
           disabled={sending}
           className="w-full rounded-xl bg-emerald-700 px-5 py-3 font-semibold text-white hover:bg-emerald-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:ring-offset-2 disabled:cursor-wait disabled:opacity-70 sm:w-auto"
         >
-          {sending ? 'Publication…' : "Publier l'annonce"}
+          {sending ? 'Publication...' : "Publier l'annonce"}
         </button>
       </form>
     </div>

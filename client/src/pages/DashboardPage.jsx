@@ -49,7 +49,7 @@ function LoadingOrError({ state, label }) {
   }
   return (
     <p className="text-slate-600" role="status">
-      Chargement de {label}…
+      Chargement de {label}...
     </p>
   );
 }
@@ -62,9 +62,8 @@ function ReceivedRequest({ request, listing, busy, onAccept, onRefuse }) {
       <div className="flex flex-wrap items-start justify-between gap-2">
         <div className="min-w-0">
           <p className="font-medium text-slate-900">{name}</p>
-          <p className="text-sm text-slate-600">
-            {request.requester?.zone && <>📍 {zoneLabel(request.requester.zone)}</>}
-            {request.requester?.zone && request.createdAt && ' · '}
+          <p className="flex flex-wrap gap-x-3 text-sm text-slate-600">
+            {request.requester?.zone && <span>Zone : {zoneLabel(request.requester.zone)}</span>}
             {request.createdAt && <time dateTime={request.createdAt}>{formatDate(request.createdAt)}</time>}
           </p>
         </div>
@@ -119,7 +118,7 @@ function MyListing({ listing, busyId, onAccept, onRefuse, onClose }) {
               onClick={() => onClose(listing)}
               className={`${primaryButton} mt-3 w-full sm:w-auto`}
             >
-              {busyId === listing.id ? 'Enregistrement…' : 'Marquer comme terminé'}
+              {busyId === listing.id ? 'Enregistrement...' : 'Marquer comme terminé'}
               <span className="sr-only"> : {listing.title}</span>
             </button>
           </div>
@@ -128,7 +127,7 @@ function MyListing({ listing, busyId, onAccept, onRefuse, onClose }) {
         <section aria-label={`Demandes reçues pour « ${listing.title} »`} className="mt-4 border-t border-slate-200 pt-4">
           <h4 className="text-sm font-semibold text-slate-700">
             Demandes reçues ({listing.requests.length})
-            {pending > 0 && <span className="font-normal text-amber-800"> · {pending} en attente</span>}
+            {pending > 0 && <span className="font-normal text-amber-800">, {pending} en attente</span>}
           </h4>
           {listing.requests.length === 0 ? (
             <p className="mt-2 text-sm text-slate-500">Aucune demande reçue pour le moment.</p>
@@ -163,9 +162,9 @@ function SentRequest({ request }) {
               {listing.title}
             </Link>
           </h3>
-          <p className="mt-0.5 text-sm text-slate-600">
-            {listing.author?.name ?? 'Habitant'}
-            {listing.author?.zone && <> · 📍 {zoneLabel(listing.author.zone)}</>}
+          <p className="mt-0.5 flex flex-wrap gap-x-3 text-sm text-slate-600">
+            <span>{listing.author?.name ?? 'Habitant'}</span>
+            {listing.author?.zone && <span>Zone : {zoneLabel(listing.author.zone)}</span>}
           </p>
         </div>
         <RequestStatusBadge status={request.status} />

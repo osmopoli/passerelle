@@ -27,7 +27,7 @@ export default function ProfileScreen({ user, zones, onUpdated, onLogout }) {
           <p className="text-sm text-slate-500">Bonjour</p>
           <h1 className="truncate text-xl font-bold text-slate-800">{user.fullName}</h1>
           <p className="truncate text-sm text-slate-500">{user.email}</p>
-          <p className="mt-1 text-sm font-medium text-emerald-700">📍 {zoneLabel}</p>
+          <p className="mt-1 text-sm font-medium text-emerald-700">Zone : {zoneLabel}</p>
         </div>
         <button
           type="button"

@@ -102,7 +102,7 @@ export default function AuthScreen({ zones, onAuthenticated }) {
           disabled={loading}
           className="w-full rounded-lg bg-emerald-600 py-3 font-semibold text-white hover:bg-emerald-700 disabled:opacity-60"
         >
-          {loading ? '…' : isRegister ? 'Créer mon compte' : 'Se connecter'}
+          {loading ? 'Patientez...' : isRegister ? 'Créer mon compte' : 'Se connecter'}
         </button>
       </form>
     </div>

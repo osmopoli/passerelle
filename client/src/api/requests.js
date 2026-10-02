@@ -3,8 +3,8 @@ import { LISTINGS_SOURCE, markMockListingRequested } from './listings.js';
 
 // Adaptateur demandes d'échange. Contrat de l'API (PAND-11, PR #8) :
 //   POST /api/listings/:id/requests { message? } (Bearer, message ≤ 1000)
-//     → 201 ExchangeRequest
-//     → 401 non connecté, 403 { error } sa propre annonce,
+//     renvoie 201 ExchangeRequest
+//     renvoie 401 non connecté, 403 { error } sa propre annonce,
 //       409 { error } annonce acceptée/terminée ou déjà demandée, 404, 422 validation
 // Les erreurs portent `status` et le message de l'API (voir api/client.js).
 export const MESSAGE_MAX = 1000;
