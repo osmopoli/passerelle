@@ -18,7 +18,11 @@ export default class ExchangeRequestsController {
       const listing = await Listing.query({ client: trx })
         .where('id', params.id)
         .forUpdate()
-        .firstOrFail()
+        .first()
+
+      if (!listing) {
+        return { status: 404, error: 'Annonce introuvable' } as const
+      }
 
       if (listing.userId === user.id) {
         return { status: 403, error: 'Impossible de demander sa propre annonce' } as const

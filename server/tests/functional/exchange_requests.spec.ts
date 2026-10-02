@@ -115,7 +115,7 @@ test.group('API demande d’échange', (group) => {
       .post(`/api/listings/${listing.id}/requests`)
       .bearerToken(await bearer(await createUser('a@test.local')))
       .json({ message: 'x'.repeat(1001) })
-    tooLong.assertStatus(400)
+    tooLong.assertStatus(422)
     assert.equal(tooLong.body().errors[0].field, 'message')
 
     const withoutMessage = await client
@@ -141,12 +141,13 @@ test.group('API demande d’échange', (group) => {
     assert.equal(listing.status, 'demandee')
   })
 
-  test('renvoie 404 pour une annonce inexistante', async ({ client }) => {
+  test('renvoie 404 pour une annonce inexistante', async ({ client, assert }) => {
     const response = await client
       .post('/api/listings/999999/requests')
       .bearerToken(await bearer(await createUser('voisin@test.local')))
       .json({})
     response.assertStatus(404)
+    assert.equal(response.body().error, 'Annonce introuvable')
   })
 
   test('annule la demande si la mise à jour de l’annonce échoue (transaction)', async ({
