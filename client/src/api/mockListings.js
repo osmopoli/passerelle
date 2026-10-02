@@ -4,8 +4,46 @@
 const alice = { id: 'u1', name: 'Alice Martin', zone: 'mamoudzou' };
 const karim = { id: 'u2', name: 'Karim Benali', zone: 'dembeni' };
 const lea = { id: 'u3', name: 'Léa Payet', zone: 'koungou' };
+// Compte fictif (mode sans API) attribué à l'utilisateur connecté : ses annonces
+// alimentent l'onglet « Mes annonces » du tableau de bord.
+const moi = { id: 'moi', name: 'Vous (compte fictif)', zone: 'mamoudzou' };
+
+export const MOCK_USERS = { alice, karim, lea };
 
 export const MOCK_LISTINGS = [
+  {
+    id: 'd1',
+    type: 'offre',
+    category: 'outils',
+    title: 'Prêt d’une échelle de 3 mètres',
+    description: 'Échelle alu pliante, idéale pour repeindre un plafond ou nettoyer les gouttières.',
+    availability: 'Le soir après 17 h',
+    status: 'demandee',
+    createdAt: '2026-09-30T17:10:00Z',
+    author: moi,
+  },
+  {
+    id: 'd2',
+    type: 'offre',
+    category: 'objets',
+    title: 'Cartons de déménagement à donner',
+    description: 'Une quinzaine de cartons solides, déjà pliés.',
+    availability: 'Samedi',
+    status: 'acceptee',
+    createdAt: '2026-09-24T11:00:00Z',
+    author: moi,
+  },
+  {
+    id: 'd3',
+    type: 'demande',
+    category: 'cours',
+    title: 'Conversation en anglais une fois par semaine',
+    description: 'Je cherche quelqu’un pour pratiquer l’anglais à l’oral, autour d’un café.',
+    availability: 'Jeudi soir',
+    status: 'disponible',
+    createdAt: '2026-09-22T08:30:00Z',
+    author: moi,
+  },
   {
     id: 'l1',
     type: 'offre',

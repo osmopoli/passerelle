@@ -47,6 +47,13 @@ export const STATUSES = toOptions({
   terminee: 'Terminée',
 });
 
+// Statuts d'une demande d'échange (EXCHANGE_REQUEST_STATUSES côté serveur).
+export const REQUEST_STATUSES = toOptions({
+  en_attente: 'En attente',
+  acceptee: 'Acceptée',
+  refusee: 'Refusée',
+});
+
 // Tolère les variantes accentuées ou en majuscules (« Demandée », « DEMANDEE »)
 // en les ramenant à la clé ASCII ci-dessus.
 export function normalizeKey(value) {
@@ -66,6 +73,7 @@ export const typeLabel = (value) => labelFrom(TYPES, value);
 export const categoryLabel = (value) => labelFrom(CATEGORIES, value);
 export const zoneLabel = (value) => labelFrom(ZONES, value);
 export const statusLabel = (value) => labelFrom(STATUSES, value);
+export const requestStatusLabel = (value) => labelFrom(REQUEST_STATUSES, value);
 
 export const isValidType = (value) => TYPES.some((t) => t.value === value);
 export const isValidCategory = (value) => CATEGORIES.some((c) => c.value === value);
