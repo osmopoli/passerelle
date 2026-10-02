@@ -60,6 +60,14 @@ router
       .post('/listings/:id/requests', [ExchangeRequestsController, 'store'])
       .where('id', router.matchers.number())
       .use(middleware.auth())
+    router
+      .post('/requests/:id/accept', [ExchangeRequestsController, 'accept'])
+      .where('id', router.matchers.number())
+      .use(middleware.auth())
+    router
+      .post('/requests/:id/refuse', [ExchangeRequestsController, 'refuse'])
+      .where('id', router.matchers.number())
+      .use(middleware.auth())
 
     router.any('/*', async ({ response }) => {
       return response.notFound({ error: 'Route introuvable' })
