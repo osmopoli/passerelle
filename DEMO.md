@@ -63,17 +63,14 @@ Variante refus, si on vous la demande (30 s) : connecté en Amina, « Soutien en
 
 ## Bugs bloquants
 
-État au 02/10/2026, 02h00. PR déjà mergées : #5 (annonces), #6 (auth), #8 (demande d'échange).
+État au 02/10/2026, 07h10 (heure de Mayotte). Mergées : API #5, #6, #7, #8, #10, #11, #12 ; front #4 (publication) et #14 (tableau de bord). Ouvertes : #9 (demande), #13 (restyle), cette PR.
 
 | # | Problème | Statut |
 | --- | --- | --- |
-| B1 | En prod, `/api/listings` répond **500** (corps vide, pas de fuite de trace). Cause probable : migrations des PR #5, #6 et #8 pas encore lancées en prod. `/api/health` et `/api/meta` répondent 200. Restent à merger : #7, #10, #11, #12 (API) et #4, #9, #13, #14 (front). | Ouvert — migrations puis seed par osmopoli8, puis merger dans l'ordre ci-dessous |
-| B2 | Inscription : la PR #6 (mergée) ne crée pas de route `/inscription`, mais `/connexion` affiche `AuthScreen` avec un onglet « Inscription ». La PR #9 (rebasée sur `main`) garde cet écran. | Résolu — le parcours passe par `/connexion` → « Inscription ». À revérifier après le merge de #4 et #14 (conflits sur `App.jsx`) |
-| B3 | Le front est buildé en mode `mock` par défaut (`VITE_LISTINGS_SOURCE`). Sans configuration, la prod affiche des données fictives. | Corrigé dans cette PR : `client/.env.production` force le mode `api` |
-| B4 | Les PR backend #10, #11 et #12 partent de `main` et modifient `server/start/routes.ts` : leurs routes (accepter/refuser, clôture, `/me/*`) entrent en conflit au merge. | Ouvert — à résoudre au merge, puis vérifier la liste des routes |
+| B1 | En prod, `/api/listings` répond **500** (corps vide, pas de fuite de trace). `/api/health` répond 200 avec la base OK ; `/api/me` répond 401 sans jeton, comme prévu. Cause probable : migrations pas lancées en prod. | Ouvert — osmopoli8 lance `node ace migration:run --force` puis `node ace db:seed` depuis `server/build` |
+| B2 | Inscription : pas de route `/inscription`, mais `/connexion` affiche `AuthScreen` avec un onglet « Inscription ». Vérifié sur `main` après le merge de #4 et #14. | Résolu |
+| B3 | Le front est buildé en mode `mock` par défaut (`VITE_LISTINGS_SOURCE`). Sans configuration, la prod affiche des données fictives. | Corrigé dans cette PR (la PR #9 ajoute le même fichier, au contenu identique) |
+| B4 | Conflits sur `server/start/routes.ts` entre #8, #10, #11 et #12. | Résolu — sur `main`, les routes demande, accepter, refuser, clôture et `/me/*` sont présentes, toutes derrière `middleware.auth()` |
+| B5 | Le bouton « Demander » (PAND-15, PR #9) n'est pas sur `main` : la page détail n'a qu'un commentaire à sa place. Sans lui, l'étape « demande » du parcours est impossible dans l'interface. La PR #9 est `CONFLICTING`. | Ouvert — rebaser #9 sur `main` (conflits avec #4 et #14 sur `App.jsx`, `api/listings.js`, `api/requests.js`), puis merger |
 
-Ordre de merge proposé pour la suite :
-
-1. API : #7 (seed) → #10 (accepter/refuser) → #11 (clôture) → #12 (`/me/*`).
-2. Front : #9 (demande, déjà rebasée sur `main`) → #4 (publication, à rebaser) → #14 (tableau de bord, à rebaser) → #13 (PAND-19, restyle de la découverte : il touche `DiscoverPage`, `Filters`, `Layout` et `ListingCard`, donc on le rebase après la chaîne fonctionnelle).
-3. Cette PR, en dernier (à cause de B3), une fois les migrations et le seed lancés et `/api/listings` à 200.
+Ordre de merge pour la suite : #9 (demande) → #13 (PAND-19, restyle de la découverte) → cette PR, en dernier, une fois B1 levé (`/api/listings` à 200).
