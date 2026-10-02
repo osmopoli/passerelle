@@ -41,7 +41,7 @@ export default function DiscoverPage() {
       <section aria-labelledby="resultats" aria-busy={status === 'loading'}>
         <h2 id="resultats" className="sr-only">Résultats</h2>
         <p className="mb-4 font-bold" role="status" aria-live="polite">
-          {status === 'loading' && 'Chargement des annonces…'}
+          {status === 'loading' && 'Chargement des annonces...'}
           {status === 'success' &&
             `${data.length} annonce${data.length > 1 ? 's' : ''} trouvée${data.length > 1 ? 's' : ''}`}
         </p>

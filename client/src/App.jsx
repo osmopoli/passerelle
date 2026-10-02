@@ -83,7 +83,7 @@ export default function App() {
   return (
     <Layout user={user}>
       {loading ? (
-        <p className="text-slate-500">Chargement…</p>
+        <p className="text-slate-500">Chargement...</p>
       ) : (
         <Route session={{ user, zones, setUser, logout, expire }} />
       )}
