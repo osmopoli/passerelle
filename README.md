@@ -27,7 +27,22 @@ cp server/.env.example server/.env
 node server/ace.js generate:key  # remplit APP_KEY dans server/.env
 # Renseigner DB_HOST / DB_PORT / DB_USER / DB_PASSWORD / DB_DATABASE dans server/.env
 npm run migrate                  # applique les migrations Lucid
+npm run seed                     # données de démo (rejouable)
 ```
+
+## Données de démo
+
+`npm run seed` (ou `node ace db:seed` dans `server/` ou `server/build/`) crée 3 comptes et 12 annonces couvrant les 2 types, les 8 catégories, 3 zones et les 4 statuts, avec des demandes cohérentes (en attente, acceptée, refusée). La commande peut être rejouée : les comptes sont mis à jour par email, leurs annonces et les demandes associées sont recréées. Les autres données ne sont pas touchées.
+
+Mot de passe commun : `Passerelle2026!`
+
+| Compte        | Email                        | Zone      |
+| ------------- | ---------------------------- | --------- |
+| Amina Soilihi | `amina@demo.passerelle.yt`   | Mamoudzou |
+| Ibrahim Madi  | `ibrahim@demo.passerelle.yt` | Koungou   |
+| Claire Hoarau | `claire@demo.passerelle.yt`  | Dembéni   |
+
+Source : `server/database/seeders/demo_seeder.ts`.
 
 ## Lancer en développement
 
@@ -167,3 +182,4 @@ Le conteneur applique les migrations au démarrage. `render.yaml` décrit le mê
 | `npm run build`   | Build React dans `server/public`, puis build AdonisJS dans `server/build` |
 | `npm start`       | Démarre `server/build` (après `npm ci --omit=dev` dedans) |
 | `npm run migrate` | Applique les migrations Lucid                            |
+| `npm run seed`    | Charge les données de démo (rejouable)                   |
