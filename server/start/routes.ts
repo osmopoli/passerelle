@@ -57,6 +57,10 @@ router
     router.get('/listings/:id', [ListingsController, 'show']).where('id', router.matchers.number())
     router.post('/listings', [ListingsController, 'store']).use(middleware.auth())
     router
+      .post('/listings/:id/close', [ListingsController, 'close'])
+      .where('id', router.matchers.number())
+      .use(middleware.auth())
+    router
       .post('/listings/:id/requests', [ExchangeRequestsController, 'store'])
       .where('id', router.matchers.number())
       .use(middleware.auth())

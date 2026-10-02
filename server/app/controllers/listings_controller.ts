@@ -1,6 +1,7 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import { errors } from '@vinejs/vine'
 import type { ModelQueryBuilderContract } from '@adonisjs/lucid/types/model'
+import db from '@adonisjs/lucid/services/db'
 import Listing from '#models/listing'
 import { createListingValidator, listListingsValidator } from '#validators/listing'
 
@@ -61,5 +62,40 @@ export default class ListingsController {
     await listing.load('author', (author) => author.select('id', 'full_name', 'zone'))
 
     return response.created(listing)
+  }
+
+  /**
+   * POST /api/listings/:id/close (auteur uniquement) : l'annonce `acceptee` passe à `terminee`
+   * et sort de la découverte. Annonce verrouillée pour ne pas croiser une demande ou une décision.
+   */
+  async close({ auth, params, response }: HttpContext) {
+    const user = auth.getUserOrFail()
+
+    const result = await db.transaction(async (trx) => {
+      const listing = await Listing.query({ client: trx })
+        .where('id', params.id)
+        .forUpdate()
+        .firstOrFail()
+
+      if (listing.userId !== user.id) {
+        return { status: 403, error: "Seul l'auteur de l'annonce peut la clôturer" } as const
+      }
+      if (listing.status !== 'acceptee') {
+        return {
+          status: 409,
+          error: 'Seule une annonce acceptée peut être clôturée',
+        } as const
+      }
+
+      listing.status = 'terminee'
+      await listing.save()
+      return { status: 200, listing } as const
+    })
+
+    if (result.status !== 200) {
+      return response.status(result.status).send({ error: result.error })
+    }
+    await result.listing.load('author', (author) => author.select('id', 'full_name', 'zone'))
+    return response.ok(result.listing)
   }
 }
